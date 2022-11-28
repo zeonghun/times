@@ -10,3 +10,21 @@ const getLatestNews = async () => {
 };
 
 getLatestNews();
+
+// 아이콘 버튼 액션
+const openNav = () => {
+  document.getElementById("mySidenav").style.width = "250px";
+};
+
+const closeNav = () => {
+  document.getElementById("mySidenav").style.width = "0";
+};
+
+const openSearchBox = () => {
+  let inputArea = document.getElementById("input-area");
+  if (inputArea.style.display === "inline") {
+    inputArea.style.display = "none";
+  } else {
+    inputArea.style.display = "inline";
+  }
+};
