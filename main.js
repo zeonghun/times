@@ -1,28 +1,46 @@
 let news = [];
 let menus = document.querySelectorAll(".menus button");
 menus.forEach((menu) => menu.addEventListener("click", (event) => getNewsByTopic(event)));
-const getLatestNews = async () => {
+let searchButton = document.getElementById("search-button");
+let url;
+
+const getNews = async () => {
   // API 호출
-  let url = new URL("https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&page_size=10");
   let header = new Headers({ "x-api-key": "mqlQ8InoIkapq3Vi6J0Rpyeat7t-m-CPkT54GJx-nu8" });
   let response = await fetch(url, { headers: header });
   let data = await response.json();
   news = data.articles;
   console.log(news);
-
   render();
+};
+
+const getLatestNews = async () => {
+  url = new URL("https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&page_size=10");
+  getNews();
 };
 
 const getNewsByTopic = async (event) => {
   // 카테고리별 검색
   let topic = event.target.textContent.toLowerCase();
+  url = new URL(`https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&page_size=10&topic=${topic}`);
+  getNews();
+};
 
-  let url = new URL(`https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&page_size=10&topic=${topic}`);
-  let header = new Headers({ "x-api-key": "mqlQ8InoIkapq3Vi6J0Rpyeat7t-m-CPkT54GJx-nu8" });
-  let response = await fetch(url, { headers: header });
-  let data = await response.json();
-  news = data.articles;
-  render();
+const openSearchBox = () => {
+  let inputArea = document.getElementById("input-area");
+  if (inputArea.style.display === "inline") {
+    // inline: Text 박스가 옆으로 보여짐
+    inputArea.style.display = "none";
+  } else {
+    inputArea.style.display = "inline";
+  }
+};
+
+const searchNews = async () => {
+  // 키워드 검색
+  let keyword = document.getElementById("search-input").value;
+  url = new URL(`https://api.newscatcherapi.com/v2/search?q=${keyword}&page_size=10`);
+  getNews();
 };
 
 const render = () => {
@@ -55,14 +73,4 @@ const openNav = () => {
 
 const closeNav = () => {
   document.getElementById("mySidenav").style.width = "0";
-};
-
-const openSearchBox = () => {
-  let inputArea = document.getElementById("input-area");
-  if (inputArea.style.display === "inline") {
-    // inline: Text 박스가 옆으로 보여짐
-    inputArea.style.display = "none";
-  } else {
-    inputArea.style.display = "inline";
-  }
 };
