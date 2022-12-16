@@ -6,12 +6,24 @@ let url;
 
 const getNews = async () => {
   // API 호출
-  let header = new Headers({ "x-api-key": "mqlQ8InoIkapq3Vi6J0Rpyeat7t-m-CPkT54GJx-nu8" });
-  let response = await fetch(url, { headers: header });
-  let data = await response.json();
-  news = data.articles;
-  console.log(news);
-  render();
+  try {
+    let header = new Headers({ "x-api-key": "mqlQ8InoIkapq3Vi6J0Rpyeat7t-m-CPkT54GJx-nu8" });
+    let response = await fetch(url, { headers: header });
+    let data = await response.json();
+    if (response.status == 200) {
+      // 예외처리
+      if (data.total_hits == 0) {
+        throw new Error("검색된 결과가 없습니다.");
+      }
+      news = data.articles;
+      console.log(news);
+      render();
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    errorRender(error.message);
+  }
 };
 
 const getLatestNews = async () => {
@@ -62,6 +74,14 @@ const render = () => {
     .join("");
 
   document.getElementById("news-board").innerHTML = newsHTML;
+};
+
+const errorRender = (message) => {
+  // 에러 메시지 출력
+  let errorHTML = `<div class="alert alert-danger text-center" role="alert">
+  ${message}
+</div>`;
+  document.getElementById("news-board").innerHTML = errorHTML;
 };
 
 getLatestNews();
