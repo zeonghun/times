@@ -65,6 +65,7 @@
 }
 
 #input-area {
+  /* 처음에 검색창 숨기기 */
   display: none;
 }
 
@@ -100,11 +101,20 @@
 
 .side-menu-list {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: column; /* 세로 정렬 */
+  align-items: center; /* 가운데 정렬 */
 }
 
 .side-menu-list button:hover {
   background-color: white;
   border-radius: 3px;
+}
+
+.pagenation-nav {
+  display: flex;
+  justify-content: center;
+}
+
+.pagination {
+  margin-top: 1em;
 }

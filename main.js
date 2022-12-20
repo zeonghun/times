@@ -1,4 +1,6 @@
 let news = [];
+let page = 1;
+let total_pages = 0;
 let menus = document.querySelectorAll(".menus button");
 menus.forEach((menu) => menu.addEventListener("click", (event) => getNewsByTopic(event)));
 let searchButton = document.getElementById("search-button");
@@ -8,6 +10,7 @@ const getNews = async () => {
   // API 호출
   try {
     let header = new Headers({ "x-api-key": "mqlQ8InoIkapq3Vi6J0Rpyeat7t-m-CPkT54GJx-nu8" });
+    url.searchParams.set("page", page); // &page 추가
     let response = await fetch(url, { headers: header });
     let data = await response.json();
     if (response.status == 200) {
@@ -16,8 +19,11 @@ const getNews = async () => {
         throw new Error("검색된 결과가 없습니다.");
       }
       news = data.articles;
+      total_pages = data.total_pages;
+      page = data.page;
       console.log(news);
       render();
+      pagenation();
     } else {
       throw new Error(data.message);
     }
@@ -82,6 +88,35 @@ const errorRender = (message) => {
   ${message}
 </div>`;
   document.getElementById("news-board").innerHTML = errorHTML;
+};
+
+const pagenation = () => {
+  // 페이지네이션
+  let pagenationHTML = "";
+  let pageGroup = Math.ceil(page / 5);
+  let last = pageGroup * 5;
+  let first = last - 4;
+  pagenationHTML = ` <li class="page-item">
+  <a class="page-link" href="#" aria-label="Previous" onclick="moveToPage(${page - 1})">
+    <span aria-hidden="true">&lt;</span>
+  </a>
+</li>`;
+  for (let i = first; i <= last; i++) {
+    pagenationHTML += `<li class="page-item ${page == i ? "active" : ""}"><a class="page-link" href="#" onclick="moveToPage(${i})">${i}</a></li>`;
+  }
+
+  pagenationHTML = ` <li class="page-item">
+  <a class="page-link" href="#" aria-label="Next" onclick="moveToPage(${page + 1})">
+    <span aria-hidden="true">&gt;</span>
+  </a>
+</li>`;
+  document.querySelector(".pagination").innerHTML = pagenationHTML;
+};
+
+const moveToPage = (pageNum) => {
+  // 페이지 이동
+  page = pageNum;
+  getNews();
 };
 
 getLatestNews();
